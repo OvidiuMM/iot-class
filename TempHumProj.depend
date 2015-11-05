@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1446403019 source:/home/pi/Documents/workspace/ejemplos/TempHumProj/main.c
+	<stdio.h>
+	<stdlib.h>
+	<linux/i2c.h>
+	<linux/i2c-dev.h>
+	<sys/ioctl.h>
+	<math.h>
+	<unistd.h>
+	<fcntl.h>
+
+1446660774 source:/home/pi/Documents/workspace/projects/TempHumProj/main.c
+	<stdio.h>
+	<stdlib.h>
+	<linux/i2c.h>
+	<linux/i2c-dev.h>
+	<sys/ioctl.h>
+	<math.h>
+	<unistd.h>
+	<fcntl.h>
+
