@@ -30,6 +30,8 @@ static void *handleLeds(void *data);
 void err_f(char mess[]);
 void write_string(char mess[]);
 
+
+int is_celsius=1;
 struct temp_struct{
     float limit_temp,actual_temp,actual_hum;
 
@@ -102,7 +104,7 @@ static void *handleLeds(void *data)
             led_off(RED_LED);
         }
 
-    rgb_led_management(control->limit_temp);
+    rgb_led_management(control->actual_hum);
      usleep(10000);    //10-millisecond delay
     printf("Thread Program is running.\n");
 
@@ -127,6 +129,7 @@ int handleGenieEvent(struct genieReplyStruct * reply)
           return result;
         }
       }
+
   }
 
   //if the received message is not a report event, print a message on the terminal window
@@ -138,6 +141,7 @@ int handleGenieEvent(struct genieReplyStruct * reply)
 
 
 void system_management(SENSOR *sens){
+  printf("Starting system...");
 
 
 /*Screen 1*/
@@ -169,9 +173,9 @@ void system_management(SENSOR *sens){
   struct genieReplyStruct reply ;  //declare a genieReplyStruct type structure
   int threshold_val=0;
   struct temp_struct control;
-time_t now;
-struct tm *now_tm;
-  char* data;
+  time_t now;
+  struct tm *now_tm;
+  char data[256];
 
   //print some information on the terminal window
   printf("\n\n");
@@ -193,34 +197,46 @@ struct tm *now_tm;
   //start the thread for writing to the cool gauge
   (void)pthread_create (&myThread,  NULL, handleLeds, (void *) &control);
 
+  threshold_val=genieReadObj(GENIE_OBJ_KNOB,0x00);
+  printf("%d",threshold_val);
 
-  for(;;)                         //infinite loop
+    for(;;)                         //infinite loop
   {
   printf("Program is running.\n");
   sens_inquire(sens);
-    while(genieReplyAvail())      //check if a message is available
-    {
-      genieGetReply(&reply);      //take out a message from the events buffer
-      if ((threshold_val = handleGenieEvent(&reply)))   //call the event handler to process the message
-      {
-        control.actual_temp=sens->temp;
+  control.actual_temp=sens->temp;
         control.limit_temp=threshold_val;
         control.actual_hum=sens->hum;
+
+    while(genieReplyAvail())      //check if a message is available
+    {
+
+      genieGetReply(&reply);      //take out a message from the events buffer
+       printf("New event: command: %2d, object: %2d, index: %d, data: %d \r\n", reply.cmd, reply.object, reply.index, reply.data);
+      if ((threshold_val = handleGenieEvent(&reply)))   //call the event handler to process the message
+      {
+
+
       }
     }
     //update all the others visual elements
 
-
+printf("Program is running. outside while \n");
 /*Screen 1*/
 
 //Temperature: Displays the temperature measurement obtained from the sensor.
 //Angularmeter0
-genieWriteObj(GENIE_OBJ_ANGULAR_METER,0x00,sens->temp);
+genieWriteObj(GENIE_OBJ_ANGULAR_METER ,0x00,sens->temp);
 
 //Humidity: Displays the %HR obtained from the sensor.
 //Meter0
+if ((sens->hum) < 100){
 genieWriteObj(GENIE_OBJ_METER,0x00,sens->hum);
-
+}
+else
+{
+genieWriteObj(GENIE_OBJ_METER,0x00,0);
+}
 /*Screen 2*/
 
 //Clock: Displays the time in hours, minutes and seconds.
@@ -233,19 +249,18 @@ int hour_min= ((int)now_tm->tm_hour *100)+ (int)now_tm->tm_min;
 genieWriteObj(GENIE_OBJ_LED_DIGITS,0x00,hour_min);
 genieWriteObj(GENIE_OBJ_LED_DIGITS,0x01,(int)now_tm->tm_sec);
 
-//Message: Displays the temperature and humidity in text format.
-//Strings1
-/*c_temp[]="Temperature is ";
-  char c_hum[]=" Humidity is";
 
+  float tem= sens->temp * is_celsius;
+  strcpy(data, "Messurments \n");
+  snprintf(data,sizeof data,"Messurments \n Temperature is: %f \n  Humidity is: %f",tem, sens->hum);
+ /* //TODO:if fahreinheit on t=1.8*C
+  strcat(data,t_s);
 
-
-  data=malloc((strlen(c_temp)+))
-  */
-  data="";
-  sprintf(data,"Temperature is: %f \n Humidity is: %f",sens->temp,sens->hum);
+  strcat(data,h_s);
+*/
+  printf("Program is running. before data crazynes 3\n");
   write_string(data);
-
+printf("Program is running. final \n");
     usleep(10000);                //10-millisecond delay.Don't hog the
   }	                          //CPU in case anything else is happening
 
@@ -277,12 +292,11 @@ sens.temp=0;
 sens.hum=0;
 connect_leds();
 
-while (1){
 
-if (start_inquire(&sens)) {print_status(&sens);}
-else { printf("Status is : bad"); }
-printf ("Raspberry Pi blink\n") ;
 
+
+
+system_management(&sens);
   /*wiringPiSetupGpio() ;
   pinMode (RED_LED, OUTPUT) ;
   pinMode (RED_RGB,OUTPUT);
@@ -313,7 +327,7 @@ printf ("Raspberry Pi blink\n") ;
        delay(1500);
    led_up(BLUE_RGB);
 */
-  }
+
 
 
 return 0;

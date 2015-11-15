@@ -14,7 +14,7 @@ INCLUDE	= -I/usr/local/include
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
 DEPS    = temphum.h blinkie.h
 LDFLAGS	= -L/usr/local/lib
-LIBS    = -lm -lpthread -lwiringPi -lgeniePi -lpthread
+LIBS    = -lm -lpthread -lwiringPi -lgeniePi
 
 SRC	= main.c
 
@@ -24,9 +24,11 @@ SRC	= main.c
 OBJ	=	$(SRC:.c=.o)
 BINS	=	$(SRC:.c=)
 
-touchAPP:	touchAPP.o
+
+main:	main.o
 	@echo [link]
-	@$(CC) -o $@ touchAPP.o $(LDFLAGS) $(LIBS)
+	@$(CC) -o $@ main.o temphum.o blinkie.o $(LDFLAGS) $(LIBS)
+
 
 .c.o:
 	@echo [Compile] $<
