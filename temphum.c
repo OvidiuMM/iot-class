@@ -1,4 +1,7 @@
 #include "temphum.h"
+
+/*******functions*****/
+
 /*FUnction that checks sensor bus and file access
 * takes file descriptor and file path&bame
 **/
@@ -15,7 +18,7 @@ else{
 }
 
  if (ioctl(file, I2C_SLAVE, DEVICE_ADDRESS) < 0){
-    perror("Failed to axquire bus acces and talk to slave! \n");
+    perror("Failed to aquire bus acces and talk to slave! \n");
     exit(1);
     }
     else{
@@ -58,20 +61,20 @@ if (read(file, buf, 4) != 4) {						// Read back data into buf[]
 
 float get_humidity(unsigned char seis_h, unsigned char ocho_h){
         unsigned int result =( (seis_h <<26)>>18) + ocho_h;			// Calculate bearing as a word value
-		printf("Raw humidity:%u \n",result);
+		//printf("Raw humidity:%u \n",result);
         //int val=(result / ((2^14)-2) * 100);
         float val = result / (pow(2.0,14) -2) *100;
-        printf("Humitidy : %f \n", val);
+        //printf("Humitidy : %f \n", val);
 return val;
 }
 
 
 float get_temperature(unsigned char ocho_t, unsigned char seis_t){
          unsigned int result =( (ocho_t <<8) + seis_t) >> 2;			// Calculate bearing as a word value)
-		printf("Raw temp: %u \n",result);
+		//printf("Raw temp: %u \n",result);
        // int val=(result / ((2^14)-2) * 165)-40;
        float val = (result / (pow(2.0,14) -2) *165)-40;
-        printf("Temp : %f \n", val);
+        //printf("Temp : %f \n", val);
         return val;
 }
 
@@ -86,3 +89,51 @@ printf("Unable to close slave\n");
 
 }
 
+int start_inquire(SENSOR *sense){
+//start device checking
+sense->fd=check_sensor(sense->fd, sense->fichero);
+if (sense->fd){
+    int result= sens_inquire(sense);
+return result;
+}
+else {
+return 0;
+}
+}
+
+int sens_inquire(SENSOR *sense){
+    sense->buf[0]=0;
+    read_request(sense->fd,sense->buf);
+    sensor_data(sense->fd,sense->buf);
+
+//Check data
+    unsigned int read_status = sense->buf[0]>>6;
+
+    if (read_status >1)
+    {
+
+        printf("Status is : %i", read_status);
+
+    }
+    else{
+        if (read_status = 1){
+            printf("Status is : %i so it has been already fetched", read_status);
+
+        }
+        //parse data
+
+        sense->hum=get_humidity( sense->buf[0], sense->buf[1]);
+        sense->temp=get_temperature( sense->buf[2], sense->buf[3]);
+
+        sleep(2);
+    }
+    return 1;
+//while closure
+}
+
+void print_status(SENSOR *sense){
+    printf("Humitidy : %f \n", sense->hum);
+    printf("Temp : %f \n", sense->temp);
+
+
+}
