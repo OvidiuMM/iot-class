@@ -103,7 +103,7 @@ int sens_inquire(SENSOR *sense){
 
     }
     else{
-        if (read_status = 1){
+        if (read_status == 1){
             printf("Status is : %i so it has been already fetched", read_status);
 
         }

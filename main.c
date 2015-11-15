@@ -18,42 +18,48 @@
 
 //***FUNCTIONS DEC.****//
 //red led on when temp>x
-int alarm_led_switch();
+void alarm_led_switch();
 //rgb led on
-int rgb_led_managemente(int hum_perc);
 //if hum < 40% red led flashing
 //if 70%> hum > 40% green led flashing
 //if hum > 70% blue led flashing
-
+void rgb_led_management(int hum_perc);
 void system_management(SENSOR *sens);
-
 int handleGenieEvent(struct genieReplyStruct * reply);
-
+static void *handleLeds(void *data);
 void err_f(char mess[]);
 void write_string(char mess[]);
+
+struct temp_struct{
+    float limit_temp,actual_temp,actual_hum;
+
+};
+
 //***FUNCTIONS DEF.****//
 
-void err_f(char mess[]){
+void err_f(char *mess){
     printf("ERROR\n");
     puts(mess);
     write_string(mess);
-    exit 1;
+    exit (1);
 }
 
-void write_string(char mess[]){
+void write_string(char *mess){
 
 genieWriteStr(0x01, mess); //write to Strings0
 }
 
-int alarm_led_switch(){
+void alarm_led_switch(){
 
     led_off(RED_LED) ;	// Off
     delay (500) ;		// mS
     led_up(RED_LED);	// On
+    delay (500) ;
+
 }
 
 //rgb led on
-int rgb_led_managemente(int hum_perc){
+void rgb_led_management(int hum_perc){
 
 //if hum < 40% red led flashing
 //if 70%> hum > 40% green led flashing
@@ -62,6 +68,7 @@ rgb_all_off();
 if (hum_perc < 40){
 
  led_up(RED_RGB);
+
 }
 else if (hum_perc < 70)
 {
@@ -70,28 +77,38 @@ else if (hum_perc < 70)
 else{
     led_up(BLUE_RGB);
 }
-
+delay (500) ;
 }
 
 //This a thread for writing to the cool gauge. The value of
 //the cool gauge will change from 0 to 99 and then from 99 to 0.
 //This process repeats forever, running in parallel with the main.
-static void *handleKnob(void *data)
+static void *handleLeds(void *data)
 {
-  int gaugeVal = 0;   //holds the value of the cool gauge
-  int step = 1;       //increment or decrement value, initialized to 1.
 
-  for(;;)             //infinite loop
-  {
-    //write to Coolgauge0
-    genieWriteObj(GENIE_OBJ_COOL_GAUGE, 0x00, gaugeVal);
-    usleep(10000);    //10-millisecond delay
+    struct temp_struct *control = (struct temp_struct*) data;
+    int forever=1;
+    while (forever==1){
+        if (control->actual_temp >= control->limit_temp)
+        {
+            genieWriteObj(GENIE_OBJ_USER_LED, 0x00,1);
+            //activate alerm red led
+            alarm_led_switch();
+        }
+        else
+        {
+            //deactivate alerm red led
+            genieWriteObj(GENIE_OBJ_USER_LED, 0x00,0);
+            led_off(RED_LED);
+        }
+
+    rgb_led_management(control->limit_temp);
+     usleep(10000);    //10-millisecond delay
     printf("Thread Program is running.\n");
-    gaugeVal += step; //increment or decrement
 
-    if(gaugeVal == 99)	step = -1;
-    if(gaugeVal == 0)	step = 1;
-  }
+
+
+    }
   return NULL;
 }
 
@@ -99,14 +116,16 @@ static void *handleKnob(void *data)
 //are processed here.
 int handleGenieEvent(struct genieReplyStruct * reply)
 {
-  if(reply->cmd == GENIE_REPORT)    //check if the cmd byte is a report event
+  if(reply->cmd == GENIE_REPORT_EVENT)    //check if the cmd byte is a report event
   {
     if(reply->object == GENIE_OBJ_KNOB) //check if the object byte is that of a slider
       {
-        if(reply->index == 0)		  //check if the index byte is that of Slider0
+        if(reply->index == 0){		  //check if the index byte is that of Slider0
           //write to the LED digits object
           //genieWriteObj(GENIE_OBJ_LED_DIGITS, 0x00, reply->data);
-          return replay->data;
+          int result=reply->data;
+          return result;
+        }
       }
   }
 
@@ -114,7 +133,7 @@ int handleGenieEvent(struct genieReplyStruct * reply)
   else
     printf("Unhandled event: command: %2d, object: %2d, index: %d, data: %d \r\n", reply->cmd, reply->object, reply->index, reply->data);
 
-    replay 0;
+    return 0;
 }
 
 
@@ -149,8 +168,9 @@ void system_management(SENSOR *sens){
   pthread_t myThread;              //declare a thread
   struct genieReplyStruct reply ;  //declare a genieReplyStruct type structure
   int threshold_val=0;
-  char c_temp[];
-  char c_hum[];
+  struct temp_struct control;
+time_t now;
+struct tm *now_tm;
   char* data;
 
   //print some information on the terminal window
@@ -160,37 +180,32 @@ void system_management(SENSOR *sens){
   printf("Program is running. Press Ctrl + C to close.\n");
 
   //first inquier of the sensor
-  if (start_inquire(&sens)) {print_status(&sens);}
+  if (start_inquire(sens)) {print_status(sens);}
   else { err_f("Can't recover temperature and humidity data");}
 
   //open the Raspberry Pi's onboard serial port, baud rate is 115200
   //make sure that the display module has the same baud rate
   genieSetup("/dev/ttyAMA0", 115200);
 
+        control.actual_temp=sens->temp;
+        control.limit_temp=0;
+        control.actual_hum=sens->hum;
   //start the thread for writing to the cool gauge
-  (void)pthread_create (&myThread,  NULL, handlKnob, NULL);
+  (void)pthread_create (&myThread,  NULL, handleLeds, (void *) &control);
 
 
   for(;;)                         //infinite loop
   {
   printf("Program is running.\n");
-  sens_inquire(&sens);
+  sens_inquire(sens);
     while(genieReplyAvail())      //check if a message is available
     {
       genieGetReply(&reply);      //take out a message from the events buffer
-      if (threshold_val = handleGenieEvent(&reply))   //call the event handler to process the message
+      if ((threshold_val = handleGenieEvent(&reply)))   //call the event handler to process the message
       {
-        if (sens->temp >= threshold_val)
-        {
-            //activate alerm red led
-            genieWriteObj(GENIE_OBJ_USER_LED, 0x00,1)
-        }
-        else
-        {
-            //deactivate alerm red led
-            genieWriteObj(GENIE_OBJ_USER_LED, 0x00,0)
-
-        }
+        control.actual_temp=sens->temp;
+        control.limit_temp=threshold_val;
+        control.actual_hum=sens->hum;
       }
     }
     //update all the others visual elements
@@ -210,10 +225,13 @@ genieWriteObj(GENIE_OBJ_METER,0x00,sens->hum);
 
 //Clock: Displays the time in hours, minutes and seconds.
 //Leddigits0 && Leddigits1
-int hour_min=(localtime(time(NULL))->tm_hour *100)+ localtime(time(NULL))->tm_min;
+now=time(NULL);
+now_tm=localtime(&now);
+
+int hour_min= ((int)now_tm->tm_hour *100)+ (int)now_tm->tm_min;
 
 genieWriteObj(GENIE_OBJ_LED_DIGITS,0x00,hour_min);
-genieWriteObj(GENIE_OBJ_LED_DIGITS,0x01,localtime(time(NULL))->tm_sec);
+genieWriteObj(GENIE_OBJ_LED_DIGITS,0x01,(int)now_tm->tm_sec);
 
 //Message: Displays the temperature and humidity in text format.
 //Strings1
@@ -224,12 +242,13 @@ genieWriteObj(GENIE_OBJ_LED_DIGITS,0x01,localtime(time(NULL))->tm_sec);
 
   data=malloc((strlen(c_temp)+))
   */
+  data="";
   sprintf(data,"Temperature is: %f \n Humidity is: %f",sens->temp,sens->hum);
   write_string(data);
 
     usleep(10000);                //10-millisecond delay.Don't hog the
   }	                          //CPU in case anything else is happening
-  return 0;
+
 
 
 }
@@ -256,13 +275,12 @@ sens.fichero="/dev/i2c-1";
 sens.fd=0;
 sens.temp=0;
 sens.hum=0;
+connect_leds();
 
 while (1){
-if (start_inquire(&sens))
-{print_status(&sens);}
-else {
- printf("Status is : bad");
-}
+
+if (start_inquire(&sens)) {print_status(&sens);}
+else { printf("Status is : bad"); }
 printf ("Raspberry Pi blink\n") ;
 
   /*wiringPiSetupGpio() ;
@@ -270,8 +288,8 @@ printf ("Raspberry Pi blink\n") ;
   pinMode (RED_RGB,OUTPUT);
   pinMode (GREEN_RGB,OUTPUT);
   pinMode (BLUE_RGB,OUTPUT);
-*/
-connect_leds();
+
+
     led_up(RED_LED);	// On
     delay (500) ;		// mS
     led_off(RED_LED) ;	// Off
@@ -294,7 +312,7 @@ connect_leds();
     rgb_all_off();
        delay(1500);
    led_up(BLUE_RGB);
-
+*/
   }
 
 
