@@ -47,46 +47,33 @@ if (read(file, buf, 4) != 4) {						// Read back data into buf[]
 		printf("Unable to read from slave\n");
 		exit(1);
 	}
-
-	/*else {
-	unsigned char highByte = buf[2];
-		unsigned char lowByte = buf[3];
-		unsigned int result = (highByte <<8) + lowByte;			// Calculate bearing as a word value
-		printf("Software v: %u \n",buf[0]);
-		printf("Bearing as byte: %u \n",buf[1]);
-		printf("Bearing as decimal: %u.%u\n",result/10, result%10); // display bearing with decimal place
-}*/
 	return buf;
 }
 
 float get_humidity(unsigned char seis_h, unsigned char ocho_h){
         unsigned int result =( (seis_h <<26)>>18) + ocho_h;			// Calculate bearing as a word value
-		//printf("Raw humidity:%u \n",result);
-        //int val=(result / ((2^14)-2) * 100);
+
         float val = result / (pow(2.0,14) -2) *100;
-        //printf("Humitidy : %f \n", val);
+
 return val;
 }
 
 
 float get_temperature(unsigned char ocho_t, unsigned char seis_t){
          unsigned int result =( (ocho_t <<8) + seis_t) >> 2;			// Calculate bearing as a word value)
-		//printf("Raw temp: %u \n",result);
-       // int val=(result / ((2^14)-2) * 165)-40;
+
        float val = (result / (pow(2.0,14) -2) *165)-40;
-        //printf("Temp : %f \n", val);
+
         return val;
 }
 
 /**Close connection to sensor (file)
 **/
 void close_connection(int file, char *fichero){
-
 if (close(file)<0){
 printf("Unable to close slave\n");
 		exit(1);
 }
-
 }
 
 int start_inquire(SENSOR *sense){
@@ -125,15 +112,13 @@ int sens_inquire(SENSOR *sense){
         sense->hum=get_humidity( sense->buf[0], sense->buf[1]);
         sense->temp=get_temperature( sense->buf[2], sense->buf[3]);
 
-        sleep(2);
+        sleep(1);
     }
     return 1;
-//while closure
+
 }
 
 void print_status(SENSOR *sense){
     printf("Humitidy : %f \n", sense->hum);
     printf("Temp : %f \n", sense->temp);
-
-
 }

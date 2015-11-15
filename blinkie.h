@@ -11,6 +11,7 @@
 void rgb_all_off();
 void led_up(int pin);
 void led_off(int pin);
+void connect_leds();
 
 //consts
 #define	RED_LED	17
