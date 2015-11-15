@@ -5,25 +5,42 @@
 #include "blinkie.h"
 
 
+
 int main (void)
 {
   printf ("Raspberry Pi blink\n") ;
 
   wiringPiSetupGpio() ;
-  pinMode (LED, OUTPUT) ;
-  pinMode (red_led,OUTPUT);
-  pinMode (green_led,OUTPUT);
-  pinMode (blue_led,OUTPUT);
+  pinMode (RED_LED, OUTPUT) ;
+  pinMode (RED_RGB,OUTPUT);
+  pinMode (GREEN_RGB,OUTPUT);
+  pinMode (BLUE_RGB,OUTPUT);
 
 
   for (;;)
   {
-    red_on();	// On
+    led_up(RED_LED);	// On
     delay (500) ;		// mS
-    red_off() ;	// Off
-    delay (500) ;
+    led_off(RED_LED) ;	// Off
 
-    rgb_pwm();
+
+   rgb_all_off();
+    delay(1500);
+    led_up(RED_RGB);
+    delay(1500);
+
+     led_off(RED_RGB);
+
+    rgb_all_off();
+    delay(1500);
+    led_up(GREEN_RGB);
+
+    delay(1500);
+    digitalWrite(RED_LED,LOW);
+
+    rgb_all_off();
+       delay(1500);
+   led_up(BLUE_RGB);
 
   }
 

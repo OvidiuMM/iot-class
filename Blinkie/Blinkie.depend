@@ -4,3 +4,16 @@
 	<wiringPi.h>
 	<softPwm.h>
 
+1447544501 source:/home/pi/workspace/projects/TempHumProj/Blinkie/main.c
+	<stdio.h>
+	<wiringPi.h>
+	<time.h>
+	<sys/timeb.h>
+	"blinkie.h"
+
+1447544715 /home/pi/workspace/projects/TempHumProj/Blinkie/blinkie.h
+	<stdio.h>
+	<wiringPi.h>
+	<time.h>
+	<sys/timeb.h>
+

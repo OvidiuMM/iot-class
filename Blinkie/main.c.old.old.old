@@ -1,0 +1,242 @@
+#include <stdio.h>
+#include <wiringPi.h>
+#include <time.h>
+#include <sys/timeb.h>
+
+// LED Pin - wiringPi pin 0 is BCM_GPIO 17.
+void red_on(int pin);
+void red_off(int pin);
+
+void rgb_on(int col_pin);
+void rgb_off(int col_pn);
+void rgb_all_off();
+void rgb_pwm();
+void led_up(int led);
+void make_pwm(int led);
+void make_pwm2(int led);
+
+//vars
+#define	LED	17
+#define RED_LED 25
+#define GREEN_LED 27
+#define BLUE_LED 22
+
+
+
+ void red_on(int pin){
+  digitalWrite (pin, HIGH) ;	// On
+
+ }
+void red_off(int pin){
+
+    digitalWrite (pin, LOW) ;	// Off
+
+}
+
+void rgb_on(int col_pin){
+digitalWrite(col_pin,LOW);
+}
+
+void rgb_off(int col_pin       ){
+    digitalWrite(còl_pin,LOW);
+
+}
+void rgb_all_off(   ){
+    digitalWrite(RED_LED,LOW);
+    digitalWrite(GREEN_LED,LOW);
+    digitalWrite(BLUE_LED,LOW);
+}
+void rgb_pwm()
+{
+    rgb_off();
+    delay(500);
+    make_pwm(RED_LED);
+
+    rgb_off();
+    delay(500);
+    make_pwm(GREEN_LED);
+
+    rgb_off();
+    delay(500);
+   make_pwm(BLUE_LED);
+
+}
+
+
+
+void make_pwm(int led){
+/*duty cycle = Time / Period of signal *100%
+#=> T(active) = DC*P/100%
+#DC=t transcurido/tiempo total
+obtain the actual time(second) */
+
+struct timeb start_time_mili, new_time_mili;
+struct timespec tim, tim2;
+
+tim.tv_sec=0;
+tim.tv_nsec=0;
+ftime (&start_time_mili);
+ftime(&new_time_mili);
+
+int diff=1000 - (int) start_time_mili.millitm;
+int t_active=1;
+int one_sec= (int)(1000.0 * (new_time_mili.time - start_time_mili.time)+(new_time_mili.millitm - start_time_mili.millitm ));
+float dc=0;
+printf("one_sec= %i so \n", one_sec);
+while (one_sec <= 999)
+{
+tim.tv_nsec=1000000*t_active;
+digitalWrite(led,HIGH);
+if (nanosleep(&tim, &tim2)<0)
+{
+    printf ("kkt");
+    return -1;
+}
+t_active=t_active + t_active
+
+printf("t_active= %i",t_active);
+digitalWrite(led,LOW);
+
+ftime(&new_time_mili);
+one_sec= (int)(1000.0 * (new_time_mili.time - start_time_mili.time)+(new_time_mili.millitm - start_time_mili.millitm ));
+dc = one_sec / 1000;
+t_active=1000-(dc*1000);
+printf("one_sec= %i so <50%\n", one_sec);
+}
+}
+
+
+/*void make_pwm(int led){
+/*duty cycle = Time / Period of signal *100%
+#=> T(active) = DC*P/100%
+#DC=t transcurido/tiempo total
+obtain the actual time(second)
+
+struct timeb start_time_mili, new_time_mili;
+struct timespec tim, tim2;
+
+tim.tv_sec=0;
+tim.tv_nsec=0;
+ftime (&start_time_mili);
+ftime(&new_time_mili);
+
+int diff=1000 - (int) start_time_mili.millitm;
+int t_active=0;
+int one_sec= (int)(1000.0 * (new_time_mili.time - start_time_mili.time)+(new_time_mili.millitm - start_time_mili.millitm ));
+float dc=0;
+printf("one_sec= %i so \n", one_sec);
+while (one_sec <= 999)
+{
+tim.tv_nsec=1000000*t_active;
+digitalWrite(led,LOW);
+if (nanosleep(&tim, &tim2)<0)
+{
+    printf ("kkt");
+    return -1;
+}
+
+printf("t_active= %i",t_active);
+digitalWrite(led,HIGH);
+
+ftime(&new_time_mili);
+one_sec= (int)(1000.0 * (new_time_mili.time - start_time_mili.time)+(new_time_mili.millitm - start_time_mili.millitm ));
+dc = one_sec / 1000;
+t_active=1000-(dc*1000);
+printf("one_sec= %i so <50%\n", one_sec);
+}
+}*/
+
+
+void make_pwm2(int led){
+//obtain the actual time(second)
+struct timeb start_time_mili, new_time_mili;
+ftime (&start_time_mili);
+ftime(&new_time_mili);
+ int diff=1000 - (int) start_time_mili.millitm;
+int counter=0;
+int one_sec= (int)(1000.0 * (new_time_mili.time - start_time_mili.time)+(new_time_mili.millitm - start_time_mili.millitm ));
+
+while (one_sec <= 999)
+{
+
+	//if counter value goes above 20 (21) reset it
+	if (counter > 20)
+	{
+		counter = 0;
+	}
+	counter=counter+1;
+
+//get the actual time in millisecconds
+	ftime(&new_time_mili);
+
+//      #from 0 to 5% don't do nothing
+if ( (one_sec/10)  < 5)
+{
+digitalWrite(led,LOW);
+
+//led is off
+}
+//      #from 5% to 50% freq is 1/20
+else if ( (one_sec/10) < 50)
+{
+    if ((counter * _5_PER / 20 ) == 1)
+    {
+    digitalWrite(led,HIGH);
+    printf("one_sec= %i so <50%\n", one_sec);
+    }
+}
+//      #from 50% to 90% freq is 10/20
+else if ( (one_sec/10) < 90)
+{
+    if ((counter  % 2 ) == 1)
+    {
+    digitalWrite(led,HIGH);
+    printf("one_sec= %i so < 90%\n", one_sec);
+    }
+}
+//      #from 90 to 100% freq is 18/20
+else if ( (one_sec/10) < 100)
+{
+    if ((counter / _90_PER) > 1)
+    {
+    digitalWrite(led,HIGH);
+    printf("one_sec= %i so 100%\n", one_sec);
+    }
+}
+
+ one_sec= (unsigned int)(1000.0 * (new_time_mili.time - start_time_mili.time)+(new_time_mili.millitm +diff - start_time_mili.millitm) );
+
+}
+}
+
+void led_up(int led){
+    digitalWrite(led,HIGH);
+}
+
+int main (void)
+{
+  printf ("Raspberry Pi blink\n") ;
+
+  wiringPiSetupGpio() ;
+  pinMode (LED, OUTPUT) ;
+  pinMode (RED_LED,OUTPUT);
+  pinMode (GREEN_LED,OUTPUT);
+  pinMode (BLUE_LED,OUTPUT);
+
+
+  for (;;)
+  {
+    red_on();	// On
+    delay (500) ;		// mS
+    red_off() ;	// Off
+    delay (500) ;
+
+    rgb_pwm();
+
+  }
+
+
+
+  return 0 ;
+}
+
