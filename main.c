@@ -31,7 +31,6 @@ void err_f(char mess[]);
 void write_string(char mess[]);
 
 
-int is_celsius=1;
 struct temp_struct{
     float limit_temp,actual_temp,actual_hum;
 
@@ -250,17 +249,11 @@ genieWriteObj(GENIE_OBJ_LED_DIGITS,0x00,hour_min);
 genieWriteObj(GENIE_OBJ_LED_DIGITS,0x01,(int)now_tm->tm_sec);
 
 
-  float tem= sens->temp * is_celsius;
   strcpy(data, "Messurments \n");
-  snprintf(data,sizeof data,"Messurments \n Temperature is: %f \n  Humidity is: %f",tem, sens->hum);
- /* //TODO:if fahreinheit on t=1.8*C
-  strcat(data,t_s);
+  snprintf(data,sizeof data,"Messurments \n Temperature is: %f \n  Humidity is: %f",sens->temp, sens->hum);
 
-  strcat(data,h_s);
-*/
-  printf("Program is running. before data crazynes 3\n");
   write_string(data);
-printf("Program is running. final \n");
+
     usleep(10000);                //10-millisecond delay.Don't hog the
   }	                          //CPU in case anything else is happening
 
