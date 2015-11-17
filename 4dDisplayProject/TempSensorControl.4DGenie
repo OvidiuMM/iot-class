@@ -1,0 +1,430 @@
+﻿Version     0.0
+Platform    uLCD-43PT-L
+PlatRes     272x480
+Depends
+end
+Options
+    Genie
+    Speed                        115200
+    Checksum                     No
+    ResponseSize                 2
+    Multidrop                    No
+    Destination                  1
+    MainForm                     0
+    SndBuf                       0
+    ButtonDisable                No
+    SignedDigits                 No
+end
+Form
+    Name                         Form0
+    Alias                        Form0
+    Bgtype                       Color
+    Color                        0x92A236
+    Image                        (None)
+    Source.Height                0
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 0
+    OnActivate                   ''
+    OnCreate                     ''
+    OnRepeat                     ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+Image
+    Name                         Image0
+    Alias                        Image0
+    Height                       81
+    Image                        dtelogo.bmp
+    Left                         0
+    Source.Height                85
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 207
+    Top                          4
+    Width                        187
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+StaticText
+    Name                         Statictext0
+    Alias                        Statictext0
+    AutoSize                     Yes
+    Caption                      'Designing applications with raspberry-PI 2015'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    15
+    Font.Style                   []
+    Height                       120
+    Left                         216
+    Top                          4
+    Transparent                  Yes
+    Width                        250
+    WordWrap                     Yes
+end
+4Dbutton
+    Name                         4Dbutton0
+    Alias                        4Dbutton0
+    Height                       48
+    Left                         420
+    Matrix                       -1
+    Momentary                    Yes
+    Size                         48x48
+    Style                        Blue
+    Top                          212
+    Type                         Button02
+    Width                        48
+    OnChanged                    Form1Activate
+end
+UserLed
+    Name                         Userled0
+    Alias                        Userled0
+    Active                       No
+    Bevel.BorderColor            clBtnFace
+    Bevel.BorderWidth            0
+    Bevel.InnerColor             clBtnFace
+    Bevel.InnerHighlight         clLime
+    Bevel.InnerOutline           None
+    Bevel.InnerShadow            0x005100
+    Bevel.InnerSpace             1
+    Bevel.InnerStyle             None
+    Bevel.Innerwidth             1
+    Bevel.OuterColor             clBtnFace
+    Bevel.OuterHighlight         clBtnHighlight
+    Bevel.OuterOutline           Outer
+    Bevel.OuterShadow            clBtnShadow
+    Bevel.OuterSpace             0
+    Bevel.OuterStyle             Raised
+    Bevel.Outerwidth             1
+    Bevel.Visible                Yes
+    Height                       17
+    Left                         64
+    OutlineColor                 BLACK
+    OutlineWidth                 0
+    PaletteEx.High1              clRed
+    PaletteEx.High2              BLACK
+    PaletteEx.Low1               0x000051
+    PaletteEx.Low2               BLACK
+    Top                          232
+    Width                        28
+    OnChanged                    ''
+end
+AngularMeter
+    Name                         Angularmeter0
+    Alias                        Angularmeter0
+    Angle                        40
+    AngleOffset                  280
+    Caption                      Temperature
+    CaptionXOffset               0
+    CaptionYOffset               0
+    CenterDotColor               'Office 2003 (Blue)'
+    CenterDotWidth               2
+    Color                        BLACK
+    ColorZone1                   clGreen
+    ColorZone2                   clBlue
+    ColorZone3                   clRed
+    Decimals                     0
+    Font.Color                   clWhite
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    8
+    Font.Style                   []
+    Height                       132
+    Labels                       10
+    LabelsFont.Color             clWhite
+    LabelsFont.Effects           []
+    LabelsFont.Name              Tahoma
+    LabelsFont.Size              8
+    LabelsFont.Style             []
+    LabelsOffset                 30
+    Left                         0
+    Maxvalue                     100
+    Minvalue                     0
+    NeedleBasewidth              8
+    NeedleColor                  clRed
+    NeedleLength                 -1
+    Percent1                     60
+    Percent2                     25
+    Radius                       -1
+    Spacing                      45
+    Ticks                        100
+    TicksColor                   clWhite
+    TicksEnlarge                 10
+    TicksMax                     14
+    TicksMin                     5
+    Top                          96
+    Width                        186
+    OnChanged                    ''
+end
+Meter
+    Name                         Meter0
+    Alias                        Meter0
+    Angle                        40
+    Backimage                    (None)
+    Bevel.BorderColor            clBtnFace
+    Bevel.BorderWidth            0
+    Bevel.InnerColor             BLACK
+    Bevel.InnerHighlight         clBtnHighlight
+    Bevel.InnerOutline           None
+    Bevel.InnerShadow            clBtnShadow
+    Bevel.InnerSpace             1
+    Bevel.InnerStyle             Lowered
+    Bevel.Innerwidth             2
+    Bevel.OuterColor             clBtnFace
+    Bevel.OuterHighlight         clBtnHighlight
+    Bevel.OuterOutline           Outer
+    Bevel.OuterShadow            clBtnShadow
+    Bevel.OuterSpace             0
+    Bevel.OuterStyle             Raised
+    Bevel.Outerwidth             1
+    Bevel.Visible                Yes
+    Caption                      'Humidity HR%'
+    Color                        BLACK
+    Font.Color                   SILVER
+    Font.Effects                 []
+    Font.Name                    Arial
+    Font.Size                    8
+    Font.Style                   []
+    Height                       114
+    LabelOffsetX                 15
+    LabelOffsetY                 10
+    Labels                       10
+    Left                         288
+    Maxvalue                     100
+    Minvalue                     0
+    NeedleColor                  SILVER
+    NeedleWidth                  1
+    Scale.Color1                 GREEN
+    Scale.Color2                 YELLOW
+    Scale.Color3                 RED
+    Scale.Enlarge                5
+    Scale.Heightmax              8
+    Scale.Heightmin              5
+    Scale.Percent1               60
+    Scale.Percent2               25
+    Scale.Ticks                  61
+    Scale.Visible                Yes
+    Spacing                      20
+    Top                          96
+    Width                        178
+    OnChanged                    ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+StaticText
+    Name                         Statictext1
+    Alias                        Statictext1
+    AutoSize                     Yes
+    Caption                      Alarm
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    9
+    Font.Style                   []
+    Height                       13
+    Left                         100
+    Top                          232
+    Transparent                  Yes
+    Width                        35
+    WordWrap                     Yes
+end
+Knob
+    Name                         Knob0
+    Alias                        Knob0
+    Backimage                    (None)
+    BaseAngle                    45
+    Handleimage                  (None)
+    Left                         196
+    Maxvalue                     60
+    Minvalue                     0
+    Radius                       40
+    Top                          136
+    OnChanged                    'Report Message'
+    OnChanging                   Leddigits2Set
+end
+StaticText
+    Name                         Statictext2
+    Alias                        Statictext2
+    AutoSize                     Yes
+    Caption                      'Screen 2'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    9
+    Font.Style                   []
+    Height                       14
+    Left                         360
+    Top                          232
+    Transparent                  Yes
+    Width                        49
+    WordWrap                     Yes
+end
+LedDigits
+    Name                         Leddigits2
+    Alias                        Leddigits2
+    Color                        BLACK
+    Decimals                     0
+    Digits                       2
+    Height                       35
+    LeadingZero                  Yes
+    Left                         200
+    OutlineColor                 0x020000
+    Palette.High                 clLime
+    Palette.Low                  0x000700
+    Top                          96
+    Width                        80
+    OnChanged                    ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+Form
+    Name                         Form1
+    Alias                        Form1
+    Bgtype                       Color
+    Color                        0x81805D
+    Image                        (None)
+    Source.Height                0
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 0
+    OnActivate                   ''
+    OnCreate                     ''
+    OnRepeat                     ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+StaticText
+    Name                         Statictext3
+    Alias                        Statictext3
+    AutoSize                     Yes
+    Caption                      'Designing applications with raspberry-PI 2015'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    15
+    Font.Style                   []
+    Height                       120
+    Left                         224
+    Top                          12
+    Transparent                  Yes
+    Width                        250
+    WordWrap                     Yes
+end
+Image
+    Name                         Image1
+    Alias                        Image1
+    Height                       81
+    Image                        dtelogo.bmp
+    Left                         8
+    Source.Height                85
+    Source.Left                  0
+    Source.Top                   0
+    Source.Width                 207
+    Top                          12
+    Width                        187
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+StaticText
+    Name                         Statictext4
+    Alias                        Statictext4
+    AutoSize                     Yes
+    Caption                      'Screen 1'
+    Color                        BLACK
+    Font.Color                   WHITE
+    Font.Effects                 []
+    Font.Name                    Tahoma
+    Font.Size                    9
+    Font.Style                   []
+    Height                       14
+    Left                         368
+    Top                          240
+    Transparent                  Yes
+    Width                        49
+    WordWrap                     Yes
+end
+4Dbutton
+    Name                         4Dbutton1
+    Alias                        4Dbutton1
+    Height                       48
+    Left                         428
+    Matrix                       -1
+    Momentary                    Yes
+    Size                         48x48
+    Style                        Blue
+    Top                          220
+    Type                         Button02
+    Width                        48
+    OnChanged                    Form0Activate
+end
+LedDigits
+    Name                         Leddigits0
+    Alias                        Leddigits0
+    Color                        BLACK
+    Decimals                     2
+    Digits                       4
+    Height                       44
+    LeadingZero                  Yes
+    Left                         8
+    OutlineColor                 BLACK
+    Palette.High                 clLime
+    Palette.Low                  0x005100
+    Top                          112
+    Width                        138
+    OnChanged                    ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+LedDigits
+    Name                         Leddigits1
+    Alias                        Leddigits1
+    Color                        BLACK
+    Decimals                     0
+    Digits                       2
+    Height                       32
+    LeadingZero                  Yes
+    Left                         160
+    OutlineColor                 BLACK
+    Palette.High                 0x5E69A2
+    Palette.Low                  0x005100
+    Top                          124
+    Width                        59
+    OnChanged                    ''
+    OnTouchMoving                ''
+    OnTouchPressed               ''
+    OnTouchReleased              ''
+end
+Strings
+    Name                         Strings1
+    Alias                        Strings1
+    Alignment                    Left
+    BGcolor                      BLACK
+    Height                       54
+    FGcolor                      WHITE
+    Font.Bold                    No
+    Font.CharSet                 ANSI
+    Font.Italic                  No
+    Font.Name                    '4D Font3 (8x12)'
+    Font.Opaque                  Yes
+    Font.Size                    12
+    Font.Strikethrough           No
+    Font.Underline               No
+    Left                         8
+    Strings                      ''
+    StringsStyle                 Message
+    Top                          176
+    Width                        358
+    OnChanged                    ''
+end
