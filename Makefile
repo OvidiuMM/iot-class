@@ -28,7 +28,7 @@ BINS	=	$(SRC:.c=)
 main:	main.o
 	@echo [link]
 	@$(CC) -o $@ main.o temphum.o blinkie.o $(LDFLAGS) $(LIBS)
-
+tempAPP: main.o
 
 .c.o:
 	@echo [Compile] $<
