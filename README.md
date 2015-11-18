@@ -17,10 +17,10 @@
 
 * Configuration
 In order to use the leds connect them to this GPIO pins:
-#define	RED_LED	17
-#define RED_RGB 25
-#define GREEN_RGB 27
-#define BLUE_RGB 22
+define	RED_LED	17
+define RED_RGB 25
+define GREEN_RGB 27
+define BLUE_RGB 22
 
 * Dependencies
   The following libraries must be installed:
