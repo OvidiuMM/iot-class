@@ -2,7 +2,7 @@
  
 #vars***********
 readonly path_to_main="/usr/local/TempHumProj/"
-readonly main_name="tempApp"
+readonly main_name="tempAPP"
 readonly log_file="app_log.txt"
 
 #functions *************
