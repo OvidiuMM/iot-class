@@ -16,16 +16,16 @@
   Clone repo to /usr/local/
 
 * Configuration
-In order to use the leds connect them to this GPIO pins:
-define	RED_LED	17
-define RED_RGB 25
-define GREEN_RGB 27
-define BLUE_RGB 22
+  In order to use the leds connect them to this GPIO pins:
+  define RED_LED 17
+  define RED_RGB 25
+  define GREEN_RGB 27
+  define BLUE_RGB 22
 
 * Dependencies
   The following libraries must be installed:
-    The ViSi-Genie-RaspPi library (https://github.com/4dsystems/ViSi-Genie-RaspPi-Library)
-    The WiringPi library (http://wiringpi.com/download-and-install/)
+  The ViSi-Genie-RaspPi library (https://github.com/4dsystems/ViSi-Genie-RaspPi-Library)
+  The WiringPi library (http://wiringpi.com/download-and-install/)
 
 * How to run tests
   No test suite defined
