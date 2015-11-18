@@ -1,7 +1,5 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
 ### What is this repository for? ###
 
 * IoT class assignment
@@ -9,11 +7,17 @@ This README would normally document whatever steps are necessary to get your app
 
 
 ### How do I get set up? ###
-* raspberrypi B+
-* 
+* raspberrypi B+, HIH-6120-021-001 sensor & 4d Systems uLCD-43PT
+
 * Summary of set up
+  Clone repo to /usr/local/
+
 * Configuration
+  Start/stop/save logs using appmanager.sh script (se usage function)
+
 * Dependencies
+  The following libraries must be installed:
+
 * Database configuration
 * How to run tests
 * Deployment instructions
