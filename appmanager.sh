@@ -9,9 +9,10 @@ readonly log_file="app_log.txt"
 function usage()
 {
 name=$0
-echo -e "USAGE: \n 	$name <-s|-k>[-f]" 
+echo -e "USAGE: \n 	$name <-s|-k|-r|-f]" 
 echo -e "	-s start app program" 
 echo -e "	-k kill app program" 
+echo -e "	-r print log file content" 
 echo -e "	-f start app program and write output
  to log file (in the same directory)" 
 exit 1
@@ -90,8 +91,12 @@ while getopts ":skfr" opt; do
 
       ;;
 r)
-	cat ${path_to_main}${log_file}
+if [[ ! -f ${path_to_main}$log_file ]] ; then
 
+	cat ${path_to_main}${log_file}
+else
+echo "there is no log file"
+fi
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
