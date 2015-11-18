@@ -1,35 +1,55 @@
 #!/bin/bash
  
-readonly path_to_main="./"
-readonly main_name="main"
+#vars***********
+readonly path_to_main="/usr/local/TempHumProj/"
+readonly main_name="tempApp"
 readonly log_file="app_log.txt"
 
-function usage(){
+#functions *************
+function usage()
+{
 name=$0
 echo -e "USAGE: \n 	$name <-s|-k>[-f]" 
 echo -e "	-s start app program" 
 echo -e "	-k kill app program" 
-echo -e "	-f start app program and write output to log file (in the same directory)" 
+echo -e "	-f start app program and write output
+ to log file (in the same directory)" 
 exit 1
 }
 
 function kill_main(){
-kill -9 `ps -ef|grep -v grep |grep $1| awk '{print $2}'`
+result=$(ps -ef| grep -v grep | grep -i $main_name | head -n 1 | awk '{print $2}')
+echo "killing process $result..."
+if [[ -n $result ]]
+then
+ kill -9 $result
+	echo "$main_name stoped..."
+
+else
+	echo "$main_name not found"
+fi	
 }
 
 function start_main(){
 check_conf
 name=$1
-${name}
+if [[ -f ${name} ]] 
+then
+bash ${name}
+echo "Starting $main_name app "
+else
+echo "no file named $name"
+exit 1
+fi
 }
 
 function log_file(){
 check_conf
-name=$1
 dt=$(date '+%d/%m/%Y %H:%M:%S');
 echo ${dt} >>  ${path_to_main}${log_file}
-./${name} 2>&1 | tee -a ${path_to_main}${log_file}
-
+echo "Logs will be stored in ${path_to_main}${log_file}"
+bash ${path_to_main}$main_name  2>&1 | tee -a ${path_to_main}${log_file}
+echo "Starting $main_name app "
 }
 
 function check_conf(){
@@ -42,17 +62,22 @@ if [[ ! -f ${path_to_main}$log_file ]] ; then
     echo -e "Creating $log_file file in ${path_to_main}"
     touch ${path_to_main}${log_file}
 fi
+already_exists=$(ps -ef| grep -v grep | grep -i $main_name | head -n 1| awk '{print $2}')
+if [[ -n $already_exists ]]
+then
+	echo "$main_name already running"
+	exit 1
+fi
 }
 
 
-
+#main thread ******
 if [ $# -eq 0 ]
   then
     echo -e "No arguments supplied\n"
     usage
-
 fi
-while getopts ":skf" opt; do
+while getopts ":skfr" opt; do
   case $opt in
       f)
 	log_file ${path_to_main}$main_name
@@ -62,6 +87,10 @@ while getopts ":skf" opt; do
       ;;
     s)
 	start_main ${path_to_main}$main_name
+
+      ;;
+r)
+	cat ${path_to_main}${log_file}
 
       ;;
     \?)

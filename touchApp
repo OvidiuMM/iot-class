@@ -1,0 +1,10 @@
+#!/bin/bash
+
+while :
+do
+
+echo "ctrl+c"
+
+sleep 3
+
+done
